@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace SnakeGame
 {
-    public partial class Form1 : Form
+    public partial class MainGame : Form
     {
         private List<Point> snake = new List<Point>();
         private Point food;
@@ -17,10 +17,9 @@ namespace SnakeGame
         private Random random = new Random();
         private int score = 0;
 
-        public Form1()
+        public MainGame()
         {
             InitializeComponent();
-            InitializeGame();
         }
 
         private void InitializeGame()
@@ -163,7 +162,51 @@ namespace SnakeGame
         {
             timer1.Stop();
             MessageBox.Show("Game Over! Your score: " + score);
-            InitializeGame();
+            StartButton.Visible = true;
+            StartButton.Enabled = true;
+        }
+
+        private void PlayMode_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Checked)
+            {
+                // Uncheck all other items
+                for (int i = 0; i < PlayMode.Items.Count; i++)
+                {
+                    if (i != e.Index)
+                    {
+                        PlayMode.SetItemChecked(i, false);
+                    }
+                }
+            }
+        }
+
+        private void StartButton_Click(object sender, EventArgs e)
+        {
+            if (PlayMode.CheckedItems.Count > 0)
+            {
+                Console.WriteLine(PlayMode.CheckedItems[0].ToString());
+                switch (PlayMode.CheckedItems[0].ToString())
+                {
+                    case "Easy":
+                        timer1.Interval = 200; break;
+                    case "Medium":
+                        timer1.Interval = 100; break;
+                    case "Hard":
+                        timer1.Interval = 50; break;
+
+                }
+                StartButton.Text = "Again!";
+                StartButton.Visible = false;
+                StartButton.Enabled = false;
+                PlayMode.Enabled = false;
+                PlayMode.Visible = false;
+                InitializeGame();
+            }
+            else
+            {
+                MessageBox.Show("Select A Level");
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
