@@ -16,6 +16,7 @@ namespace SnakeGame
         private Direction currentDirection = Direction.Right;
         private Random random = new Random();
         private int score = 0;
+        private Boolean Keylock = false;
 
         public MainGame()
         {
@@ -41,23 +42,37 @@ namespace SnakeGame
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
+            if (Keylock == true)
+                return;
             switch (e.KeyCode)
             {
                 case Keys.Up:
                     if (currentDirection != Direction.Down)
+                    {
                         currentDirection = Direction.Up;
+                        Keylock = true;
+                    }
                     break;
                 case Keys.Down:
                     if (currentDirection != Direction.Up)
+                    {
                         currentDirection = Direction.Down;
+                        Keylock = true;
+                    }
                     break;
                 case Keys.Left:
                     if (currentDirection != Direction.Right)
+                        {
                         currentDirection = Direction.Left;
+                        Keylock = true;
+                    }
                     break;
                 case Keys.Right:
                     if (currentDirection != Direction.Left)
+                        {
                         currentDirection = Direction.Right;
+                        Keylock = true;
+                    }
                     break;
             }
         }
@@ -67,6 +82,7 @@ namespace SnakeGame
             MoveSnake();
             CheckCollision();
             this.Invalidate();
+            Keylock = false;
         }
 
         private void MoveSnake()
@@ -185,7 +201,6 @@ namespace SnakeGame
         {
             if (PlayMode.CheckedItems.Count > 0)
             {
-                Console.WriteLine(PlayMode.CheckedItems[0].ToString());
                 switch (PlayMode.CheckedItems[0].ToString())
                 {
                     case "Easy":
@@ -201,6 +216,7 @@ namespace SnakeGame
                 StartButton.Enabled = false;
                 PlayMode.Enabled = false;
                 PlayMode.Visible = false;
+                label1.Visible = false;
                 InitializeGame();
             }
             else
@@ -216,7 +232,10 @@ namespace SnakeGame
             // Draw snake
             foreach (Point point in snake)
             {
-                e.Graphics.FillEllipse(Brushes.Black, new Rectangle(point.X * 20, point.Y * 20, 20, 20));
+                if (point == snake[0])
+                    e.Graphics.FillEllipse(Brushes.Blue, new Rectangle(point.X * 20, point.Y * 20, 20, 20));
+                else
+                    e.Graphics.FillEllipse(Brushes.Black, new Rectangle(point.X * 20, point.Y * 20, 20, 20));
             }
 
             // Draw food
@@ -230,5 +249,6 @@ namespace SnakeGame
             Left,
             Right
         }
+
     }
 }
